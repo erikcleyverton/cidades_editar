@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 
-export interface Pessoa {
-  id: number;
-  nome: string;
+export interface Cidade {
+  idCidade: number;
+  nomeCidade: string;
+  numeroEleitores: number;
 }
 
 @Component({
@@ -13,44 +14,56 @@ export interface Pessoa {
   styleUrl: './formulario.css'
 })
 export class Formulario {
-  id: number | null = null;
-  nome: string = '';
+ 
+  nome_cidade: string = '';
+  numero_eleitores: number | null = null;
+  idEditando: number | null = null;
 
-  listaPessoa: Pessoa[] = [];
+  // Lista vinculada ao @for no HTML
+  listaCidades: Cidade[] = [];
 
   addItem(): void {
-    if (!this.nome) return;
+    if (!this.nome_cidade || !this.numero_eleitores) return;
 
-    if (this.id !== null) {
-      const index = this.listaPessoa.findIndex(p => p.id === this.id);
+    if (this.idEditando !== null) {
+      // Atualizar item existente
+      const index = this.listaCidades.findIndex(c => c.idCidade === this.idEditando);
       if (index !== -1) {
-        this.listaPessoa[index] = { id: this.id, nome: this.nome };
+        this.listaCidades[index] = {
+          idCidade: this.idEditando,
+          nomeCidade: this.nome_cidade,
+          numeroEleitores: this.numero_eleitores
+        };
       }
     } else {
-      const novoItem: Pessoa = {
-        id: this.listaPessoa.length + 1,
-        nome: this.nome
+      // Adicionar novo item
+      const novoItem: Cidade = {
+        idCidade: this.listaCidades.length + 1,
+        nomeCidade: this.nome_cidade,
+        numeroEleitores: this.numero_eleitores
       };
-      this.listaPessoa.push(novoItem);
+      this.listaCidades.push(novoItem);
     }
 
     this.LimparItem();
   }
 
-  editarItem(pessoa: Pessoa): void {
-    this.id = pessoa.id;
-    this.nome = pessoa.nome;
+  editarItem(cidade: Cidade): void {
+    this.idEditando = cidade.idCidade;
+    this.nome_cidade = cidade.nomeCidade;
+    this.numero_eleitores = cidade.numeroEleitores;
   }
 
   excluirItem(id: number): void {
-    this.listaPessoa = this.listaPessoa.filter(p => p.id !== id);
-    if (this.id === id) {
+    this.listaCidades = this.listaCidades.filter(c => c.idCidade !== id);
+    if (this.idEditando === id) {
       this.LimparItem();
     }
   }
 
   LimparItem(): void {
-    this.nome = '';
-    this.id = null;
+    this.nome_cidade = '';
+    this.numero_eleitores = null;
+    this.idEditando = null;
   }
 }

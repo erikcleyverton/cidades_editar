@@ -7,4 +7,4 @@ import { RouterLink } from '@angular/router';
   templateUrl: './menu.html',
   styleUrl: './menu.css'
 })
-export class MenuComponent {}
+export class Menu { }
