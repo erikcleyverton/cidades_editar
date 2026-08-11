@@ -19,14 +19,14 @@ export class Formulario {
   numero_eleitores: number | null = null;
   idEditando: number | null = null;
 
-  // Lista vinculada ao @for no HTML
+ 
   listaCidades: Cidade[] = [];
 
   addItem(): void {
     if (!this.nome_cidade || !this.numero_eleitores) return;
 
     if (this.idEditando !== null) {
-      // Atualizar item existente
+
       const index = this.listaCidades.findIndex(c => c.idCidade === this.idEditando);
       if (index !== -1) {
         this.listaCidades[index] = {
@@ -36,7 +36,7 @@ export class Formulario {
         };
       }
     } else {
-      // Adicionar novo item
+    
       const novoItem: Cidade = {
         idCidade: this.listaCidades.length + 1,
         nomeCidade: this.nome_cidade,
