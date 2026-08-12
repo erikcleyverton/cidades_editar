@@ -1,44 +1,18 @@
 <div id="div-lista">
-
-    <h1> Lista Pessoa </h1>
-
-
-
+    <h2>Consulta de Eleitores</h2>
+  
     <div id="div-lista-pessoas">
-
-        @for(elem of listaPessoa(); track elem.id ){
-
-            <div class="div-item-pessoa">
-
-                <span class="item-pessoa">
-
-                    {{elem.id}} - {{elem.nome}} - {{elem.cpf}} - {{elem.dataNascimento}} - {{elem.email}}
-
-                </span>
-
-                <span class="btns-lista">
-
-                    <a class="lnk-editar" (click)="buscarPorId(elem)"> Editar </a>
-
-                    <a class="lnk-excluir"  (click)="exluir(elem)"> Excluir </a>
-
-                </span>
-
-            </div>
-
-        }@empty{
-
-            <div class="div-item-pessoa">
-
-                NENHUM REGISTRO NA LISTA
-
-            </div>
-
-        }
-
-
-
+      @for(elem of listaPessoa(); track elem.id){
+        <div class="div-item-pessoa">
+          <span>{{elem.id}} - {{elem.nome_cidade}} ({{elem.numero_eleitores}} eleitores)</span>
+          
+          <div class="btns-lista">
+            <span class="lnk-editar" (click)="buscarPorId(elem)">Editar</span>
+            <span class="lnk-excluir" (click)="exluir(elem)">Excluir</span>
+          </div>
+        </div>
+      } @empty {
+        <p>Nenhum eleitor cadastrado!</p>
+      }
     </div>
-
-
-
+  </div>

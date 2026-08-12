@@ -1,69 +1,85 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-
-export interface Cidade {
-  idCidade: number;
-  nomeCidade: string;
-  numeroEleitores: number;
-}
+import { ActivatedRoute } from '@angular/router';
+import { PessoaService } from '../services/pessoa-service';
+import { Pessoa } from '../models/pessoa';
 
 @Component({
   selector: 'app-formulario',
   imports: [FormsModule],
   templateUrl: './formulario.html',
-  styleUrl: './formulario.css'
+  styleUrl: './formulario.css',
 })
-export class Formulario {
- 
-  nome_cidade: string = '';
+export class Formulario implements OnInit {
+  nome_cidade = '';
   numero_eleitores: number | null = null;
-  idEditando: number | null = null;
+  idPessoaEdit = 0;
+  edit = false;
 
- 
-  listaCidades: Cidade[] = [];
+  constructor(private route: ActivatedRoute, private pessoaService: PessoaService) { }
 
-  addItem(): void {
-    if (!this.nome_cidade || !this.numero_eleitores) return;
-
-    if (this.idEditando !== null) {
-
-      const index = this.listaCidades.findIndex(c => c.idCidade === this.idEditando);
-      if (index !== -1) {
-        this.listaCidades[index] = {
-          idCidade: this.idEditando,
-          nomeCidade: this.nome_cidade,
-          numeroEleitores: this.numero_eleitores
-        };
-      }
-    } else {
-    
-      const novoItem: Cidade = {
-        idCidade: this.listaCidades.length + 1,
-        nomeCidade: this.nome_cidade,
-        numeroEleitores: this.numero_eleitores
-      };
-      this.listaCidades.push(novoItem);
-    }
-
-    this.LimparItem();
-  }
-
-  editarItem(cidade: Cidade): void {
-    this.idEditando = cidade.idCidade;
-    this.nome_cidade = cidade.nomeCidade;
-    this.numero_eleitores = cidade.numeroEleitores;
-  }
-
-  excluirItem(id: number): void {
-    this.listaCidades = this.listaCidades.filter(c => c.idCidade !== id);
-    if (this.idEditando === id) {
-      this.LimparItem();
-    }
-  }
-
-  LimparItem(): void {
+  limpaAtributos() {
     this.nome_cidade = '';
     this.numero_eleitores = null;
-    this.idEditando = null;
+    this.idPessoaEdit = 0;
+    this.edit = false;
+  }
+
+  carregaAtributos(pessoa: Pessoa) {
+    this.nome_cidade = pessoa.nome_cidade || '';
+    this.numero_eleitores = pessoa.numero_eleitores ?? null;
+  }
+
+  ngOnInit() {
+    const idPessoa = this.route.snapshot.paramMap.get('id');
+
+    this.idPessoaEdit = Number(idPessoa);
+
+    if (idPessoa) {
+      this.edit = true;
+
+      this.pessoaService.buscarPorId(Number(idPessoa))
+        .subscribe((objPessoa: Pessoa | undefined) => {
+          if (objPessoa) {
+            this.carregaAtributos({ ...objPessoa });
+          }
+        });
+    }
+  }
+
+  save() {
+    const pessoa: Pessoa = {
+      nome_cidade: this.nome_cidade,
+      numero_eleitores: this.numero_eleitores
+    };
+
+    if (this.edit) {
+      pessoa.id = this.idPessoaEdit;
+      this.pessoaService.editar(pessoa);
+      this.edit = false;
+    } else {
+      pessoa.id = this.pessoaService.tamanhoArray() + 1;
+      this.pessoaService.adicionar(pessoa);
+    }
+
+    this.limpaAtributos();
+  }
+
+  listaCidades() {
+    return this.pessoaService.listar();
+  }
+
+  excluirItem(id?: number) {
+    if (id !== undefined) {
+      this.pessoaService.excluir(id);
+    }
+  }
+
+  editarItem(pessoa: Pessoa) {
+    if (pessoa.id) {
+      this.idPessoaEdit = pessoa.id;
+      this.edit = true;
+      this.carregaAtributos(pessoa);
+    }
   }
 }

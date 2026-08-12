@@ -1,34 +1,34 @@
 <div id="div-form">
-    <h2>Cadastro de Cidades e Eleitores</h2>
-  
-    <form id="formulario">
-      <label for="cidade">Cidade</label>
-      <input type="text" name="cidade" id="cidade" [(ngModel)]="nome_cidade">
-  
-      <label for="numero_eleitores">Número do Eleitor</label>
-      <input type="number" name="numero_eleitores" id="numero_eleitores" [(ngModel)]="numero_eleitores">
-  
-      <div id="div-btns">
-        <button type="button" id="btnAdd" (click)="addItem()">
-          {{ idEditando !== null ? 'Atualizar' : 'Adicionar' }}
-        </button>
-  
-        <button type="button" id="btnLimpar" (click)="LimparItem()"> Limpar </button>
-      </div>
-    </form>
-  
-    <div id="div-lista">
-      @for(elem of listaCidades; track elem.idCidade){
-        <div class="div-item">
-          <span>{{elem.idCidade}} - {{elem.nomeCidade}} - {{elem.numeroEleitores}} eleitores</span>
-          
-          <div class="btns-item">
-            <button type="button" class="btn-editar" (click)="editarItem(elem)">Editar</button>
-            <button type="button" class="btn-excluir" (click)="excluirItem(elem.idCidade)">Excluir</button>
-          </div>
-        </div>
-      } @empty {
-        <div class="div-item"> NENHUMA CIDADE OU ELEITOR ! </div>
-      }
+  <h2>Cadastro de Cidades e Eleitores</h2>
+
+  <form id="formulario">
+    <label for="cidade">Cidade</label>
+    <input type="text" name="cidade" id="cidade" [(ngModel)]="nome_cidade">
+
+    <label for="numero_eleitores">Número do Eleitor</label>
+    <input type="number" name="numero_eleitores" id="numero_eleitores" [(ngModel)]="numero_eleitores">
+
+    <div id="div-btns">
+      <button type="button" id="btnAdd" (click)="save()">
+        {{ edit ? 'Atualizar' : 'Adicionar' }}
+      </button>
+
+      <button type="button" id="btnLimpar" (click)="limpaAtributos()"> Limpar </button>
     </div>
+  </form>
+
+  <div id="div-lista">
+    @for(elem of listaCidades(); track elem.id){
+      <div class="div-item">
+        <span>{{elem.id}} - {{elem.nome_cidade}} - {{elem.numero_eleitores}} eleitores</span>
+        
+        <div class="btns-item">
+          <button type="button" class="btn-editar" (click)="editarItem(elem)">Editar</button>
+          <button type="button" class="btn-excluir" (click)="excluirItem(elem.id)">Excluir</button>
+        </div>
+      </div>
+    } @empty {
+      <div class="div-item"> NENHUMA CIDADE OU ELEITOR ! </div>
+    }
   </div>
+</div>
